@@ -52,6 +52,68 @@ docker compose up -d
 - Database Isolation Level: READ-COMMITTED
 - Protocol: HTTPS (configured by default)
 
+## Nextcloud Configuration (config.php)
+
+### Using Environment Variables
+
+The Nextcloud configuration can be managed through environment variables in the `docker-compose.yml` file. Some important variables already included:
+
+```yaml
+environment:
+  - OVERWRITEPROTOCOL=https
+  - OVERWRITECLIURL=https://<YOUR-NEXTCLOUD-DOMAIN>
+```
+
+Additional common configuration options you can add:
+
+```yaml
+environment:
+  - NEXTCLOUD_TRUSTED_DOMAINS=your-domain.com
+  - TRUSTED_PROXIES=172.16.0.0/12
+  - REDIS_HOST=redis
+  - SMTP_HOST=smtp.example.com
+  - SMTP_PORT=587
+  - SMTP_SECURE=tls
+  - MAIL_FROM_ADDRESS=nextcloud
+  - MAIL_DOMAIN=example.com
+```
+
+### Direct Configuration
+
+To modify the config.php file directly:
+
+1. Access the container:
+```bash
+docker compose exec app bash
+```
+
+2. Edit the configuration file:
+```bash
+vi /var/www/html/config/config.php
+```
+
+Common configurations to consider:
+```php
+$CONFIG = array (
+  'trusted_domains' => 
+  array (
+    0 => 'localhost',
+    1 => 'your-domain.com',
+  ),
+  'trusted_proxies' => ['172.16.0.0/12'],
+  'overwrite.cli.url' => 'https://your-domain.com',
+  'overwriteprotocol' => 'https',
+  'mail_smtpmode' => 'smtp',
+  'mail_smtphost' => 'smtp.example.com',
+  'mail_smtpport' => '587',
+);
+```
+
+Remember to restart the Nextcloud container after making changes:
+```bash
+docker compose restart app
+```
+
 ## Maintenance
 
 ### Updating
