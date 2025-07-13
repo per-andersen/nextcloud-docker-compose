@@ -42,6 +42,15 @@ jobs:
             echo "No new tag detected."
             echo "NEW_TAG=false" >> $GITHUB_ENV  # Set a flag indicating no new tag
           fi
+      - 
+        name: Commit updated previous_tags.txt
+        if: env.NEW_TAG == 'true'
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add previous_tags.txt
+          git commit -m "Update previous_tags.txt"
+          git push origin main  # Or another branch you're using
       -
         name: Login to Docker Hub
         if: env.NEW_TAG == 'true'
