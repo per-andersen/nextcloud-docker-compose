@@ -17,6 +17,8 @@ jobs:
         run: |
           LATEST_BASE_TAG=$(curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/" | jq -r '.results[3].name' | cut -d '-' -f 1)
           LATEST_CUSTOM_TAG=$(curl -s "https://hub.docker.com/v2/repositories/obafgkmlt/nextcloud-cron-ffmpeg-pdlib/tags/" | jq -r '.results[1].name')
+          echo "$LATEST_BASE_TAG"
+          echo "$LATEST_CUSTOM_TAG"
       -
         name: Login to Docker Hub
         if: env.LATEST_BASE_TAG != env.LATEST_CUSTOM_TAG
