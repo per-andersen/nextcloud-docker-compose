@@ -21,6 +21,13 @@ jobs:
 
           # Save the tags to a file
           echo "$tags" > nextcloud_tags.txt
+      -
+        name: Download previous tags
+        id: download_previous_tags
+        uses: actions/download-artifact@v3
+        with:
+          name: previous-tags
+          path: ./previous_tags.txt
       - 
         name: Check for New Tag
         id: check_new_tag
@@ -42,6 +49,12 @@ jobs:
             echo "No new tag detected."
             echo "NEW_TAG=false" >> $GITHUB_ENV  # Set a flag indicating no new tag
           fi
+      - 
+        name: Upload previous tags as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: previous-tags
+          path: ./previous_tags.txt
       -
         name: Login to Docker Hub
         if: env.NEW_TAG == 'true'
