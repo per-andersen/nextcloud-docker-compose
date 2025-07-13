@@ -32,7 +32,7 @@ jobs:
         with:
           context: ./nextcloud-dockerfile/
           push: true
-          tags:
+          tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/nextcloud-cron-ffmpeg-pdlib:latest
             ${{ vars.DOCKERHUB_USERNAME }}/nextcloud-cron-ffmpeg-pdlib:${{ env.EVENT_DATE }}
           
