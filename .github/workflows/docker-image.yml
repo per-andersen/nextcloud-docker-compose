@@ -1,7 +1,9 @@
 name: Docker Image CI
 
 on:
-  push:
+  schedule:
+    - cron: '15 * * * *'
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -10,24 +12,58 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
+      - 
+        name: Get Docker Hub Tags
+        id: get_tags
+        run: |
+          # Get the list of tags from the Docker Hub API
+          tags=$(curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/" | jq -r '.results[].name')
+
+          # Save the tags to a file
+          echo "$tags" > nextcloud_tags.txt
+      - 
+        name: Check for New Tag
+        id: check_new_tag
+        run: |
+          # Compare with the previous tags
+          if [[ ! -f "previous_tags.txt" ]]; then
+            echo "No previous tags found. Saving the current tags."
+            cp nextcloud_tags.txt previous_tags.txt
+            exit 0
+          fi
+
+          # Check for differences between the previous tags and the current tags
+          if ! cmp -s nextcloud_tags.txt previous_tags.txt; then
+            echo "New tag detected!"
+            # Save the new tags to the previous_tags.txt for the next run
+            cp nextcloud_tags.txt previous_tags.txt
+            echo "NEW_TAG=true" >> $GITHUB_ENV  # Set a flag to trigger the build
+          else
+            echo "No new tag detected."
+            echo "NEW_TAG=false" >> $GITHUB_ENV  # Set a flag indicating no new tag
+          fi
       -
         name: Login to Docker Hub
+        if: env.NEW_TAG == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Set up QEMU
+        if: env.NEW_TAG == 'true'
         uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
+        if: env.NEW_TAG == 'true'
         uses: docker/setup-buildx-action@v3
-
       - 
         name: Set GitHub event date
+        if: env.NEW_TAG == 'true'
         run: echo "EVENT_DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
       -
         name: Build and push
+        if: env.NEW_TAG == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./nextcloud-dockerfile/
