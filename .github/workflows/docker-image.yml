@@ -25,12 +25,12 @@ jobs:
 
       - 
         name: Set GitHub event date
-        run: echo "github.event_date=$('%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "EVENT_DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
       -
         name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: ./nextcloud-dockerfile/
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/nextcloud-cron-ffmpeg-pdlib:${{ github.event_date }}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/nextcloud-cron-ffmpeg-pdlib:${{ env.EVENT_DATE }}
           
