@@ -14,7 +14,6 @@ jobs:
         uses: actions/checkout@v4
       - 
         name: Get Docker Hub Tags
-        id: get_tags
         run: |
           # Get the list of tags from the Docker Hub API
           tags=$(curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/" | jq -r '.results[].name')
@@ -23,15 +22,12 @@ jobs:
           echo "$tags" > nextcloud_tags.txt
       -
         name: Download previous tags
-        id: download_previous_tags
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
           name: previous-tags
-          path: ./previous_tags.txt
       - 
         name: Check for New Tag
-        id: check_new_tag
         run: |
           # Compare with the previous tags
           if [[ ! -f "previous_tags.txt" ]]; then
@@ -56,6 +52,7 @@ jobs:
         with:
           name: previous-tags
           path: ./previous_tags.txt
+          overwrite: true
       -
         name: Login to Docker Hub
         if: env.NEW_TAG == 'true'
