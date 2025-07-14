@@ -28,7 +28,8 @@ Before deploying, you need to modify several configuration values in the `docker
 
 ## Building the Custom Image
 
-The deployment uses a custom Docker image that includes cron, FFmpeg, and PDLib support. To build the image:
+The deployment uses a custom Docker image that includes cron, FFmpeg, and optionally PDLib support. The docker compose yml
+will by default use the version of the image on the public Docker hub `(obafgkmlt/nextcloud-cron-ffmpeg-pdlib)` where PDLib support is not enabled. To enable PDLib support follow the instructions in step 4 of the configuration and build the image locally. To build the image:
 
 ```bash
 cd nextcloud-dockerfile
