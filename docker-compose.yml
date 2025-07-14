@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
   app:
-    image: nextcloud-cron-ffmpeg-pdlib:latest
+    image: obafgkmlt/nextcloud-cron-ffmpeg-pdlib:latest
     restart: always
     ports:
       - 9196:80
