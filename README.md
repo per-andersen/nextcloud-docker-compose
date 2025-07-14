@@ -1,6 +1,6 @@
 # Nextcloud Docker Compose Deployment
 
-This repository contains a Docker Compose configuration for deploying Nextcloud with MariaDB and custom configurations including cron, FFmpeg, and PDLib support.
+This repository contains a Docker Compose configuration for deploying Nextcloud with MariaDB and custom configurations including cron, FFmpeg, and optionally PDLib support.
 
 ## Prerequisites
 
@@ -23,6 +23,9 @@ Before deploying, you need to modify several configuration values in the `docker
 3. Domain configuration:
    - Replace `<YOUR-NEXTCLOUD-DOMAIN>` with your actual domain name (e.g., `nextcloud-example.com`)
 
+4. (Optionally) Enabling PDLib
+   - Uncomment the lines between lines 30 and 64 in the Dockerfile. PDLib is off by default as it is costly to include. Only enable it if needed.
+
 ## Building the Custom Image
 
 The deployment uses a custom Docker image that includes cron, FFmpeg, and PDLib support. To build the image:
@@ -43,14 +46,6 @@ docker compose up -d
 2. The Nextcloud instance will be available on port 9196. You can access it at:
    - `http://localhost:9196` (if accessing locally)
    - `https://<YOUR-NEXTCLOUD-DOMAIN>` (if configured with a domain and HTTPS)
-
-## Configuration Details
-
-- MariaDB version: 11.4
-- PHP Memory Limit: 4096M
-- PHP Upload Limit: 4096M
-- Database Isolation Level: READ-COMMITTED
-- Protocol: HTTPS (configured by default)
 
 ## Nextcloud Configuration (config.php)
 
