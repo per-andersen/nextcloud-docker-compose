@@ -15,10 +15,7 @@ jobs:
       -
         name: Get latest tags
         run: |
-          LATEST_BASE_TAG=$(
-            curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/?page=1" | jq -r '.results[].name'
-            curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/?page=2" | jq -r '.results[].name'
-          ) | cut -d '-' -f 1 | grep -Ev '[a-zA-Z]' | sort -V | tail -n 1
+          LATEST_BASE_TAG=$(curl -s "https://hub.docker.com/v2/repositories/library/nextcloud/tags/?page_size=25" | jq -r '.results[].name' | cut -d '-' -f 1 | grep -Ev '[a-zA-Z]' | sort -V | tail -n 1)
           LATEST_CUSTOM_TAG=$(curl -s "https://hub.docker.com/v2/repositories/obafgkmlt/nextcloud-cron-ffmpeg-pdlib/tags/" | jq -r '.results[].name' | grep -Ev '[a-zA-Z]' | sort -V | tail -n 1)
       
           echo "Debug: LATEST_BASE_TAG before setting: $LATEST_BASE_TAG"
