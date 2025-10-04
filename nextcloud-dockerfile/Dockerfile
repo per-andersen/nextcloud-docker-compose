@@ -1,4 +1,4 @@
-FROM nextcloud:31-apache
+FROM nextcloud:stable
 
 # Settings up supervisord for cron jobs
 RUN apt-get -qq update && apt-get -qq install -y \
